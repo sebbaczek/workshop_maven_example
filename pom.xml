@@ -1,0 +1,85 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>Exc1</groupId>
+    <artifactId>w5-maven-exercise-1</artifactId>
+    <!--    numer wersji javy w projekcie-->
+    <version>1</version>
+
+    <!--                jsoup pobiera tekst ze stron www-->
+    <dependencies>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.14.3</version>
+        </dependency>
+    </dependencies>
+
+    <!--plugin aby projekt zadziałał w javie 17/18-->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.9.0</version>
+                <configuration>
+                    <release>17</release>
+                </configuration>
+            </plugin>
+
+            <!--            plugin PMD sprawdza poprawność kodu-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.15.0</version>
+
+                <!--        wypisuje błąd na ekranie,
+                dodanie violition checking z ustawień pluginu na stronie apache
+                klikamy clean, a potem verify, powstaje plik pmd.xml z opisem błędu,
+                w mavenie  można zmienić wersję pluginu
+                -->
+                <configuration>
+                    <printFailingErrors>true</printFailingErrors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--            plugin budujący jar z dependencjami aby spakować swój projekt-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+<!--                <version>3.4.2</version>-->
+
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>
+                                        w5.exc1.Main
+                                    </mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+        </plugins>
+
+    </build>
+</project>
