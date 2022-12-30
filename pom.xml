@@ -50,7 +50,9 @@
                 </executions>
             </plugin>
 
-            <!--            plugin budujący jar z dependencjami aby spakować swój projekt-->
+            <!--            plugin budujący jar z dependencjami w target aby spakować swój projekt, który można
+            uruchomić z
+            terminala: java -jar .\ścieżka względna        -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
