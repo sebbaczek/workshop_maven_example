@@ -1,16 +1,40 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>Exc1</groupId>
-    <artifactId>w5-maven-exercise-1</artifactId>
+    <groupId>workshop.example</groupId>
+    <artifactId>example-maven</artifactId>
     <!--    numer wersji javy w projekcie-->
     <version>1</version>
 
-    <!--                jsoup pobiera tekst ze stron www-->
+    <properties>
+        <java.version>18</java.version>
+        <maven-compiler-plugin.version>3.9.0</maven-compiler-plugin.version>
+        <lombok.version>1.18.20.0</lombok.version>
+    </properties>
+
     <dependencies>
+        <!--                jsoup pobiera tekst ze stron www-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.jsoup</groupId>-->
+        <!--            <artifactId>jsoup</artifactId>-->
+        <!--            <version>1.14.3</version>-->
+        <!--        </dependency>-->
         <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.14.3</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-maven-plugin</artifactId>
+            <version>1.18.20.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.9.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.9.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -23,32 +47,38 @@
                 <version>3.9.0</version>
                 <configuration>
                     <release>17</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.project.lombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.24</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
             <!--            plugin PMD sprawdza poprawność kodu-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.15.0</version>
-
-                <!--        wypisuje błąd na ekranie,
-                dodanie violition checking z ustawień pluginu na stronie apache
-                klikamy clean, a potem verify, powstaje plik pmd.xml z opisem błędu,
-                w mavenie  można zmienić wersję pluginu
-                -->
-                <configuration>
-                    <printFailingErrors>true</printFailingErrors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                &lt;!&ndash;        wypisuje błąd na ekranie,-->
+            <!--                dodanie violition checking z ustawień pluginu na stronie apache-->
+            <!--                klikamy clean, a potem verify, powstaje plik pmd.xml z opisem błędu,-->
+            <!--                w mavenie  można zmienić wersję pluginu-->
+            <!--                &ndash;&gt;-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-pmd-plugin</artifactId>-->
+            <!--                <version>3.15.0</version>      -->
+            <!--                <configuration>-->
+            <!--                    <printFailingErrors>true</printFailingErrors>-->
+            <!--                </configuration>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>validate</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>check</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
 
             <!--            plugin budujący jar z dependencjami w target aby spakować swój projekt, który można
             uruchomić z
@@ -56,7 +86,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-<!--                <version>3.4.2</version>-->
+                <!--                <version>3.4.2</version>-->
 
                 <executions>
                     <execution>
@@ -68,7 +98,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        w5.exc1.Main
+                                        workshop.example.Main
                                     </mainClass>
                                 </manifest>
                             </archive>
@@ -80,7 +110,56 @@
                 </executions>
             </plugin>
 
+            <!--            plugin do uruchamiania testów-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M7</version>
+            </plugin>
 
+            <!--            plugin do kontroli czy projekt jest pokryty np. w 50% testami-->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.8</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>test</phase>
+                        <goals>
+<!--                            //raport w target/site/jacoco-->
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-check</id>
+                        <goals>
+<!--                            daje błąd dopiero na cyklu verify-->
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule implementation="org.jacoco.maven.RuleConfiguration">
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit implementation="org.jacoco.report.check.Limit">
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.5</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+
+            </plugin>
         </plugins>
 
     </build>
